@@ -1,6 +1,6 @@
 <script setup>
-import {useForm} from '@inertiajs/inertia-vue3';
 import {ref, onMounted, reactive} from 'vue';
+import ImageCarousel from "@/Components/ImageCarousel.vue";
 
 const state = reactive({
   longitude: null,
@@ -11,7 +11,8 @@ const state = reactive({
   isPhotoTaken: false,
   isShotPhoto: false,
   isLoading: false,
-  link: '#'
+  link: '#',
+  pictureList: []
 })
 
 const camera = ref()
@@ -62,7 +63,6 @@ function stopCameraStream() {
 function takePhoto() {
   if (!state.isPhotoTaken) {
     state.isShotPhoto = true;
-
     const FLASH_TIMEOUT = 50;
 
     setTimeout(() => {
@@ -74,31 +74,22 @@ function takePhoto() {
 
   const context = canvas.value.getContext('2d');
   context.drawImage(camera.value, 0, 0, 450, 337.5);
-
+  state.pictureList.push(canvas.value);
   uploadPicture()
 }
 
-function downloadImage() {
-  const download = document.getElementById("downloadPhoto");
-  const canvas = document.getElementById("photoTaken").toDataURL("image/jpeg")
-      .replace("image/jpeg", "image/octet-stream");
-  download.setAttribute("href", canvas);
-}
-
 async function uploadPicture() {
-  canvas.value.toBlob(async (blob) => {
 
+  canvas.value.toBlob(async (blob) => {
     let formData = new FormData();
     formData.append("file", blob);
     formData.append("filename", Date.now() + (Math.random() * 1000));
-
     axios.post('/api/picture', formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       }
 
     }).then((res) => {
-      alert("booh")
     }).catch((error) => {
       console.log(error)
     });
@@ -124,7 +115,7 @@ onMounted(() => {
     Your GPS position is: {{ state.longitude }},
     {{ state.latitude }}
   </div>
-  <div id="app" class="web-camera-container">
+  <div id="camera" class="web-camera-container">
     <div class="camera-button">
       <button type="button" class="button is-rounded"
               :class="{ 'is-primary' : !state.isCameraOpen, 'is-danger' : state.isCameraOpen}" @click="toggleCamera">
@@ -146,9 +137,9 @@ onMounted(() => {
 
       <div class="camera-shutter" :class="{'flash' : state.isShotPhoto}"></div>
 
-      <video v-show="!state.isPhotoTaken" ref="camera" :width="450" :height="337.5" autoplay></video>
+      <video ref="camera" width="450" height="337.5" autoplay style="z-index: 100"></video>
 
-      <canvas v-show="state.isPhotoTaken" id="photoTaken" ref="canvas" :width="450" :height="337.5"></canvas>
+      <canvas hidden id="photoTaken" ref="canvas" :width="450" :height="337.5" style="z-index: 0"></canvas>
     </div>
 
     <div v-if="state.isCameraOpen && !state.isLoading" class="camera-shoot">
@@ -156,12 +147,7 @@ onMounted(() => {
         <img src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
       </button>
     </div>
-
-    <div v-if="state.isPhotoTaken && state.isCameraOpen" class="camera-download">
-      <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="downloadImage">
-        Download
-      </a>
-    </div>
   </div>
 
+  <ImageCarousel :pictureList="state.pictureList" />
 </template>

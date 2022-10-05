@@ -19,5 +19,6 @@ createInertiaApp({
             .mount(el);
     },
 });
+//asdasd
 
 InertiaProgress.init({ color: '#4B5563' });

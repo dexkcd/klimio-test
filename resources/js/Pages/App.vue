@@ -1,6 +1,7 @@
 <script setup>
 import {ref, onMounted, reactive} from 'vue';
 import ImageCarousel from "@/Components/ImageCarousel.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const state = reactive({
   longitude: null,
@@ -111,43 +112,53 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="gpsLocation">
-    Your GPS position is: {{ state.longitude }},
-    {{ state.latitude }}
+  <div class="container mx-auto">
+    <div class="grid grid-flow-row">
+      <div class="columns-2">
+        <div class="">
+          <PrimaryButton class="ml-4"
+                  :class="{ 'is-primary' : !state.isCameraOpen, 'is-danger' : state.isCameraOpen}" @click="toggleCamera">
+            <span v-if="!state.isCameraOpen">Open Camera</span>
+            <span v-else>Close Camera</span>
+          </PrimaryButton>
+        </div>
+        <div class="" ref="gpsLocation">
+          Your GPS position is: {{ state.longitude }},
+          {{ state.latitude }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-flow-row">
+      <div id="camera" class="web-camera-container">
+        <div v-show="state.isCameraOpen && state.isLoading" class="camera-loading">
+          <ul class="loader-circle">
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+        <div class="shadow" v-show="!state.isLoading">
+          <video class="w-full" ref="camera" autoplay style="z-index: 100"></video>
+          <canvas  class="invisible" id="photoTaken" ref="canvas" :width="450" :height="337.5" style="z-index: 0"></canvas>
+        </div>
+
+        <div v-if="state.isCameraOpen && !state.isLoading" class="grid justify-items-center">
+          <button variant="success"  @click="takePhoto">
+            <img src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-row">
+      <div class="columns-1">
+        <div v-if="state.isCameraOpen && !state.isLoading" class="w-full justify-center">
+          <ImageCarousel :pictureList="state.pictureList" />
+        </div>
+      </div>
+    </div>
+
+
   </div>
-  <div id="camera" class="web-camera-container">
-    <div class="camera-button">
-      <button type="button" class="button is-rounded"
-              :class="{ 'is-primary' : !state.isCameraOpen, 'is-danger' : state.isCameraOpen}" @click="toggleCamera">
-        <span v-if="!state.isCameraOpen">Open Camera</span>
-        <span v-else>Close Camera</span>
-      </button>
-    </div>
 
-    <div v-show="state.isCameraOpen && state.isLoading" class="camera-loading">
-      <ul class="loader-circle">
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-    </div>
-
-    <div v-if="state.isCameraOpen" v-show="!state.isLoading" class="camera-box"
-         :class="{ 'flash' : state.isShotPhoto }">
-
-      <div class="camera-shutter" :class="{'flash' : state.isShotPhoto}"></div>
-
-      <video ref="camera" width="450" height="337.5" autoplay style="z-index: 100"></video>
-
-      <canvas hidden id="photoTaken" ref="canvas" :width="450" :height="337.5" style="z-index: 0"></canvas>
-    </div>
-
-    <div v-if="state.isCameraOpen && !state.isLoading" class="camera-shoot">
-      <button type="button" class="button" @click="takePhoto">
-        <img src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
-      </button>
-    </div>
-  </div>
-
-  <ImageCarousel :pictureList="state.pictureList" />
 </template>

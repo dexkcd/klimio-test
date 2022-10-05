@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="carouselItem"></canvas>
+  <canvas height="600" width="400" ref="carouselItem"></canvas>
 </template>
 
 <script setup>

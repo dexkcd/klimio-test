@@ -1,5 +1,5 @@
 <template>
-  <Carousel :settings="settings" :breakpoints="breakpoints">
+  <Carousel ref="myCarousel" :settings="settings" :breakpoints="breakpoints">
     <Slide v-for="(imageCanvas,index) in pictureList" :key="index" ref="pictureListItemsRef">
       <div class="carousel__item">
         {{ index }}
@@ -12,9 +12,14 @@
     </template>
   </Carousel>
 </template>
+<style>
+.carousel__item {
+  width: 100%;
 
+}
+</style>
 <script setup>
-import {onMounted, onUpdated, reactive, ref, watch, watchEffect} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import {Carousel, Navigation, Slide} from 'vue3-carousel'
 
 import 'vue3-carousel/dist/carousel.css'
@@ -23,6 +28,7 @@ import CarouselItem from "@/Components/CarouselItem.vue";
 const props = defineProps(['pictureList']);
 const pictureListItemsRef = ref([])
 
+const myCarousel = ref();
 
 // carousel settings
 const settings = reactive({
@@ -45,4 +51,6 @@ const breakpoints = reactive({
   },
 });
 
+onMounted(()=>{
+})
 </script>

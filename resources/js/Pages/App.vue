@@ -38,7 +38,7 @@ function createCameraElement() {
   const constraints = (window.constraints = {
     audio: false,
     video: {
-      width: { ideal: 400 },
+      width: { ideal: 300 },
       height: { ideal: 600 }
     }
   });
@@ -77,7 +77,7 @@ function takePhoto() {
   state.isPhotoTaken = !state.isPhotoTaken;
 
   const context = canvas.value.getContext('2d');
-  context.drawImage(camera.value, 0, 0, 400, 600);
+  context.drawImage(camera.value, 0, 0, 300, 600);
   state.pictureList.push(canvas.value);
   uploadPicture()
 }
@@ -143,8 +143,8 @@ onMounted(() => {
           </ul>
         </div>
         <div class="shadow w-full h-fit grid justify-items-center" v-show="!state.isLoading" >
-          <video :width="400" :height="600" ref="camera" autoplay></video>
-          <canvas  class="invisible absolute" id="photoTaken" ref="canvas" :width="400" :height="600" style="z-index: 0"></canvas>
+          <video :width="300" :height="600" ref="camera" autoplay></video>
+          <canvas  class="invisible absolute" id="photoTaken" ref="canvas" :width="300" :height="600" style="z-index: 0"></canvas>
         </div>
 
         <div v-if="state.isCameraOpen && !state.isLoading" class="grid justify-items-center">

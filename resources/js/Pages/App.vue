@@ -78,11 +78,12 @@ function takePhoto() {
 
   const context = canvas.value.getContext('2d');
   context.drawImage(camera.value, 0, 0, 300, 600);
-  state.pictureList.push(canvas.value);
-  uploadPicture()
+  let uploadingPicture = {canvas: canvas.value, uploaded: ref(false)}
+  state.pictureList.push(uploadingPicture);
+  uploadPicture(uploadingPicture)
 }
 
-async function uploadPicture() {
+async function uploadPicture(uploadingPicture) {
 
   canvas.value.toBlob(async (blob) => {
     let formData = new FormData();
@@ -93,7 +94,14 @@ async function uploadPicture() {
         "Content-Type": "multipart/form-data",
       }
 
-    }).then((res) => {
+    }).then(async (res) => {
+      if (res.status === 201) {
+        const randomTimeout = (Math.random() * 10000);
+        await new Promise(r => setTimeout(r, randomTimeout));
+        uploadingPicture.uploaded.value = true
+      } else {
+        console.log("Should receive 201")
+      }
     }).catch((error) => {
       console.log(error)
     });

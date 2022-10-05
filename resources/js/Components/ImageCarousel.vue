@@ -1,9 +1,8 @@
 <template>
   <Carousel ref="myCarousel" :settings="settings" :breakpoints="breakpoints">
-    <Slide v-for="(imageCanvas,index) in pictureList" :key="index" ref="pictureListItemsRef">
+    <Slide v-for="(uploadingPicture,index) in pictureList" :key="index" ref="pictureListItemsRef">
       <div class="carousel__item">
-        {{ index }}
-        <CarouselItem :imageCanvas="imageCanvas" />
+        <CarouselItem :imageCanvas="uploadingPicture.canvas" :hasUploaded="uploadingPicture.uploaded" />
       </div>
     </Slide>
 

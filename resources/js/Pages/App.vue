@@ -142,13 +142,13 @@ onMounted(() => {
             <li></li>
           </ul>
         </div>
-        <div class="shadow w-full h-96 justify-items-center" v-show="!state.isLoading" >
+        <div class="shadow w-full h-fit grid justify-items-center" v-show="!state.isLoading" >
           <video :width="400" :height="600" ref="camera" autoplay></video>
           <canvas  class="invisible absolute" id="photoTaken" ref="canvas" :width="400" :height="600" style="z-index: 0"></canvas>
         </div>
 
         <div v-if="state.isCameraOpen && !state.isLoading" class="grid justify-items-center">
-          <button variant="success"  @click="takePhoto">
+          <button  @click="takePhoto">
             <img src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
           </button>
         </div>

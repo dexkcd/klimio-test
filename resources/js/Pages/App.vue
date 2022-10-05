@@ -37,7 +37,10 @@ function createCameraElement() {
 
   const constraints = (window.constraints = {
     audio: false,
-    video: true
+    video: {
+      width: { ideal: 400 },
+      height: { ideal: 600 }
+    }
   });
 
   navigator.mediaDevices
@@ -74,7 +77,7 @@ function takePhoto() {
   state.isPhotoTaken = !state.isPhotoTaken;
 
   const context = canvas.value.getContext('2d');
-  context.drawImage(camera.value, 0, 0, 450, 337.5);
+  context.drawImage(camera.value, 0, 0, 400, 600);
   state.pictureList.push(canvas.value);
   uploadPicture()
 }
@@ -113,7 +116,8 @@ onMounted(() => {
 
 <template>
   <div class="container mx-auto">
-    <div class="grid grid-flow-row">
+
+    <div class="grid grid-flow-row p-8">
       <div class="columns-2">
         <div class="">
           <PrimaryButton class="ml-4"
@@ -138,9 +142,9 @@ onMounted(() => {
             <li></li>
           </ul>
         </div>
-        <div class="shadow" v-show="!state.isLoading">
-          <video class="w-full" ref="camera" autoplay style="z-index: 100"></video>
-          <canvas  class="invisible" id="photoTaken" ref="canvas" :width="450" :height="337.5" style="z-index: 0"></canvas>
+        <div class="shadow w-full h-96 justify-items-center" v-show="!state.isLoading" >
+          <video :width="400" :height="600" ref="camera" autoplay></video>
+          <canvas  class="invisible absolute" id="photoTaken" ref="canvas" :width="400" :height="600" style="z-index: 0"></canvas>
         </div>
 
         <div v-if="state.isCameraOpen && !state.isLoading" class="grid justify-items-center">
@@ -150,11 +154,10 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="grid grid-row">
-      <div class="columns-1">
-        <div v-if="state.isCameraOpen && !state.isLoading" class="w-full justify-center">
-          <ImageCarousel :pictureList="state.pictureList" />
-        </div>
+
+    <div class="columns-1">
+      <div v-if="state.pictureList.length >0 && !state.isLoading" class="w-full justify-center">
+        <ImageCarousel :pictureList="state.pictureList" />
       </div>
     </div>
 

@@ -3,8 +3,7 @@
 </template>
 
 <script setup>
-import {onMounted, onUpdated, reactive, ref, watch, watchEffect} from 'vue'
-import {Carousel, Navigation, Slide} from 'vue3-carousel'
+import {onMounted, ref, } from 'vue'
 
 const carouselItem = ref()
 const props = defineProps(['imageCanvas']);
